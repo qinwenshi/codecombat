@@ -153,7 +153,7 @@ module.exports = class TeacherClassView extends RootView
       
     dir = @sortDirection
     @students.comparator = (student1, student2) ->
-      return (if student1.get('name') < student2.get('name') then -dir else dir)
+      return (if student1.get('name').toLowerCase() < student2.get('name').toLowerCase() then -dir else dir)
     @students.sort()
     
   sortByProgress: (e) ->
