@@ -1305,7 +1305,8 @@
     how_to_enroll_blurb_2: "To bulk-enroll multiple students, select them using the checkboxes on the left side of the classroom page and click the \"Enroll Selected Students\" button."
     how_to_enroll_blurb_3: "Once a student is enrolled, they will have access to all of the course content."
     bulk_pricing_blurb: "Purchasing for more than 15 students? Get in touch with us for bulk pricing quotes."
-
+    total_unenrolled: "Total unenrolled"
+    
   classes:
     archmage_title: "Archmage"
     archmage_title_description: "(Coder)"

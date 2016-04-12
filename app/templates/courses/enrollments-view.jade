@@ -59,10 +59,21 @@ mixin enrollmentStats
     span(data-i18n='teacher.total_enrolled_students')
     span.spr :
     = view.prepaids.totalRedeemers()
-  .small-details
+    
+  h5.small-details.m-t-3
     span(data-i18n='teacher.unenrolled_students')
+  each classroom in view.classrooms.models
+    if classroom.get('members').length > 0 && view.classroomNotEnrolledMap && view.classroomNotEnrolledMap[classroom.id] > 0
+      .small-details
+        span= classroom.get('name')
+        span.spr : 
+        span= view.classroomNotEnrolledMap[classroom.id]
+
+  .small-details
+    span(data-i18n='teacher.total_unenrolled')
     span.spr :
-    = (view.members.length - view.prepaids.totalRedeemers())
+    = view.totalNotEnrolled
+  
   //- .enroll-students.btn.btn-lg.btn-navy
   //-   span(data-i18n='teacher.enroll_students')
 
