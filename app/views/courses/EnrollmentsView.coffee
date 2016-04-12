@@ -9,6 +9,7 @@ RootView = require 'views/core/RootView'
 stripeHandler = require 'core/services/stripe'
 template = require 'templates/courses/enrollments-view'
 User = require 'models/User'
+Users = require 'collections/Users'
 utils = require 'core/utils'
 Products = require 'collections/Products'
 
@@ -24,7 +25,7 @@ module.exports = class EnrollmentsView extends RootView
     @supermodel.trackCollection(@ownedClassrooms)
     @listenTo stripeHandler, 'received-token', @onStripeReceivedToken
     @fromClassroom = utils.getQueryVariable('from-classroom')
-    @members = new CocoCollection([], { model: User })
+    @members = new Users()
     @listenTo @members, 'sync', @membersSync
     @classrooms = new CocoCollection([], { url: "/db/classroom", model: Classroom })
     @classrooms.comparator = '_id'
@@ -53,10 +54,7 @@ module.exports = class EnrollmentsView extends RootView
 
   onceClassroomsSync: ->
     for classroom in @classrooms.models
-      @members.fetch({
-        remove: false
-        url: "/db/classroom/#{classroom.id}/members"
-      })
+      @members.fetchForClassroom(classroom, {remove: false})
 
   membersSync: ->
     @memberEnrolledMap = {}

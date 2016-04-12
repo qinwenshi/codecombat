@@ -1061,7 +1061,6 @@
     already_enrolled: "already enrolled"
     licenses_remaining: "licenses remaining:"
     insufficient_enrollments: "insufficient paid enrollments"
-    enroll_students: "Enroll Students"
     get_enrollments: "Get More Enrollments"
     change_language: "Change Course Language"
     keep_using: "Keep Using"
@@ -1290,6 +1289,7 @@
     show_students_from: "Show students from" # Enroll students modal
     enroll_the_following_students: "Enroll the following students"
     all_students: "All Students"
+    enroll_students: "Enroll Students"
     enrollments_blurb_1: "Students taking Computer Science" # Enrollments page
     enrollments_blurb_2: "require enrollments to access the courses."
     credits_available: "Credits Available"
