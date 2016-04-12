@@ -70,8 +70,7 @@ mixin addCredits
   .text-center
     h5(data-i18n='teacher.add_enrollment_credits')
     div.m-t-1
-      //- input#students-input.text-center.enrollment-count(value=view.numberOfStudents type='number')
-      input#students-input.text-center.enrollment-count(value=15 type='number')
+      input#students-input.text-center.enrollment-count(value=view.numberOfStudents type='number')
     div.m-t-1
       if view.state === 'purchasing'
         .purchase-now.btn.btn-lg.btn-forest.disabled

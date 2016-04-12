@@ -69,12 +69,17 @@ module.exports = class EnrollmentsView extends RootView
       for memberID in classroom.get('members')
         @classroomNotEnrolledMap[classroom.id]++ unless @memberEnrolledMap[memberID]
       @totalNotEnrolled += @classroomNotEnrolledMap[classroom.id]
-    @numberOfStudents = @totalNotEnrolled
+    # @numberOfStudents = @totalNotEnrolled
+    @numberOfStudents = 15 # TODO: Count students properly
     @render?()
 
   onInputStudentsInput: ->
-    @numberOfStudents = Math.max(parseInt(@$('#students-input').val()) or 0, 0)
-    @updatePrice()
+    input = @$('#students-input').val()
+    if input isnt "" and (parseFloat(input) isnt parseInt(input) or _.isNaN parseInt(input))
+      @$('#students-input').val(@numberOfStudents)
+    else
+      @numberOfStudents = Math.max(parseInt(@$('#students-input').val()) or 0, 0)
+      @updatePrice()
 
   updatePrice: ->
     @renderSelectors '#price-form-group'
