@@ -284,6 +284,8 @@ mixin copyCodes
 
 mixin bulkAssignControls
   .bulk-assign-controls.form-inline
+    .cant-assign-to-unenrolled.small-details(class=view.assigningToUnenrolled ? 'visible' : '')
+      span(data-i18n='teacher.cant_assign_to_unenrolled')
     span.small
       span(data-i18n='teacher.bulk_assign')
       span :

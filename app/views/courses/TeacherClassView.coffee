@@ -202,10 +202,16 @@ module.exports = class TeacherClassView extends RootView
   onClickBulkAssign: ->
     courseID = $('.bulk-course-select').val()
     courseInstance = @courseInstances.findWhere({ courseID, classroomID: @classroom.id })
-    members = @getSelectedStudentIDs().filter((index, userID) =>
+    selectedIDs = @getSelectedStudentIDs()
+    members = selectedIDs.filter((index, userID) =>
       user = @students.get(userID)
       user.isEnrolled()
     ).toArray()
+    
+    @assigningToUnenrolled = _.any selectedIDs, (userID) =>
+      not @students.get(userID).isEnrolled()
+      
+    @$('.cant-assign-to-unenrolled').toggleClass('visible', @assigningToUnenrolled)
 
     if courseInstance
       courseInstance.addMembers members, {
