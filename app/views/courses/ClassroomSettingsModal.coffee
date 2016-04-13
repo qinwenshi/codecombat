@@ -28,7 +28,7 @@ module.exports = class ClassroomSettingsModal extends ModalView
     e.preventDefault()
     form = @$('form')
     forms.clearFormAlerts(form)
-    attrs = forms.formToObject(form)
+    attrs = forms.formToObject(form, ignoreEmptyString: false)
     if attrs.language
       attrs.aceConfig = { language: attrs.language }
       delete attrs.language
