@@ -210,8 +210,11 @@ module.exports = class TeacherClassView extends RootView
     
     @assigningToUnenrolled = _.any selectedIDs, (userID) =>
       not @students.get(userID).isEnrolled()
-      
+    
     @$('.cant-assign-to-unenrolled').toggleClass('visible', @assigningToUnenrolled)
+    
+    @assigningToNobody = selectedIDs.length is 0
+    @$('.no-students-selected').toggleClass('visible', @assigningToNobody)
 
     if courseInstance
       courseInstance.addMembers members, {

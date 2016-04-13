@@ -1286,6 +1286,7 @@
     assigned: "Assigned"
     enroll_selected_students: "Enroll Selected Students"
     cant_assign_to_unenrolled: "Course cannot be assigned to students who are not enrolled."
+    no_students_selected: "No students were selected."
     guides_coming_soon: "Guides coming soon!" # Courses
     show_students_from: "Show students from" # Enroll students modal
     enroll_the_following_students: "Enroll the following students"
