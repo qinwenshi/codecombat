@@ -1290,6 +1290,7 @@
     enroll_the_following_students: "Enroll the following students"
     all_students: "All Students"
     enroll_students: "Enroll Students"
+    not_enough_enrollments: "Not enough Enrollments available."
     enrollments_blurb_1: "Students taking Computer Science" # Enrollments page
     enrollments_blurb_2: "require enrollments to access the courses."
     credits_available: "Credits Available"

@@ -46,10 +46,8 @@ module.exports = class ActivateLicensesModal extends ModalView
       numToActivate = @$('input[name="user"]:checked:not(:disabled)').length
     @$('#total-selected-span').text(numToActivate)
     remaining = @prepaids.totalMaxRedeemers() - @prepaids.totalRedeemers() - numToActivate
-    @$('#licenses-remaining-span').text(remaining)
     depleted = remaining < 0
-    @$('#not-depleted-span').toggleClass('hide', depleted)
-    @$('#depleted-span').toggleClass('hide', !depleted)
+    @$('.not-enough-enrollments').toggleClass('visible', depleted)
     @$('#activate-licenses-btn').toggleClass('disabled', depleted).toggleClass('btn-success', not depleted).toggleClass('btn-default', depleted)
     
   replaceStudentList: (e) ->
