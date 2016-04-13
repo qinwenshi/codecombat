@@ -20,6 +20,16 @@ _.extend ClassroomSchema.properties,
     type: 'boolean'
     default: false
     description: 'Visual only; determines if the classroom is in the "archived" list of the normal list.'
+  courses: c.array { title: 'Courses' }, c.object { title: 'Course' }, {
+    _id: c.objectId()
+    levels: c.array { title: 'Levels' }, c.object { title: 'Level' }, {
+      type: c.shortString()
+      version: c.object({ title: 'Version' }, {
+        majorVersion: {type: 'number', minimum: 0}
+        original: c.objectId()
+      })
+    }
+  }
 
 c.extendBasicProperties ClassroomSchema, 'Classroom'
 
