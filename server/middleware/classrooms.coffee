@@ -8,6 +8,7 @@ mongoose = require 'mongoose'
 Classroom = require '../models/Classroom'
 Course = require '../models/Course'
 Campaign = require '../models/Campaign'
+Level = require '../models/Level'
 parse = require '../commons/parse'
 LevelSession = require '../models/LevelSession'
 User = require '../models/User'
@@ -29,6 +30,21 @@ module.exports =
     classrooms = yield dbq
     classrooms = (classroom.toObject({req: req}) for classroom in classrooms)
     res.status(200).send(classrooms)
+
+  fetchAllLevels: wrap (req, res, next) ->
+    classroom = yield database.getDocFromHandle(req, Classroom)
+    if not classroom
+      throw new errors.NotFound('Classroom not found.')
+    
+    levelOriginals = []
+    for course in classroom.get('courses') or []
+      for level in course.levels
+        levelOriginals.push(level.original)
+    
+    levels = yield Level.find({ original: { $in: levelOriginals }, slug: { $exists: true }}).select(parse.getProjectFromReq(req))
+    levels = (level.toObject({ req: req }) for level in levels)
+    
+    res.status(200).send(levels)
 
   fetchMemberSessions: wrap (req, res, next) ->
     throw new errors.Unauthorized() unless req.user

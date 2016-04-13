@@ -59,7 +59,7 @@ describe 'GET /db/classroom/:id', ->
             expect(body._id).toBe(classroomID = body._id)
             done()
 
-fdescribe 'POST /db/classroom', ->
+describe 'POST /db/classroom', ->
   
   beforeEach utils.wrap (done) ->
     yield utils.clearModels [User, Classroom, Course, Level, Campaign]
@@ -114,7 +114,39 @@ fdescribe 'POST /db/classroom', ->
     expect(classroom.get('courses')[0].levels[0].type).toBe('course')
     done()
         
-        
+describe 'GET /db/classroom/:handle/levels', ->
+
+  beforeEach utils.wrap (done) ->
+    yield utils.clearModels [User, Classroom, Course, Level, Campaign]
+    admin = yield utils.initAdmin()
+    yield utils.loginUser(admin)
+    levelJSON = { name: 'King\'s Peak 3', permissions: [{access: 'owner', target: admin.id}], type: 'course' }
+    [res, body] = yield request.postAsync({uri: getURL('/db/level'), json: levelJSON})
+    expect(res.statusCode).toBe(200)
+    @level = yield Level.findById(res.body._id)
+    campaignJSON = { name: 'Campaign', levels: {} }
+    paredLevel = _.pick(res.body, 'name', 'original', 'type')
+    campaignJSON.levels[res.body.original] = paredLevel
+    [res, body] = yield request.postAsync({uri: getURL('/db/campaign'), json: campaignJSON})
+    @campaign = yield Campaign.findById(res.body._id)
+    @course = Course({name: 'Course', campaignID: @campaign._id})
+    yield @course.save()
+    teacher = yield utils.initUser({role: 'teacher'})
+    yield utils.loginUser(teacher)
+    data = { name: 'Classroom 1' }
+    [res, body] = yield request.postAsync {uri: classroomsURL, json: data }
+    expect(res.statusCode).toBe(201)
+    @classroom = yield Classroom.findById(res.body._id)
+    done()
+  
+  it 'returns all levels referenced in in the classroom\'s copy of course levels', utils.wrap (done) ->
+    [res, body] = yield request.getAsync { uri: getURL("/db/classroom/#{@classroom.id}/levels"), json: true }
+    expect(res.statusCode).toBe(200)
+    levels = res.body
+    expect(levels.length).toBe(1)
+    expect(levels[0].name).toBe("King's Peak 3")
+    done()
+    
 describe 'PUT /db/classroom', ->
 
   it 'clears database users and classrooms', (done) ->

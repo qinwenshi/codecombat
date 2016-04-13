@@ -46,6 +46,7 @@ module.exports.setup = (app) ->
   
   app.post('/db/classroom', mw.classrooms.post)
   app.get('/db/classroom', mw.classrooms.getByOwner)
+  app.get('/db/classroom/:handle/levels', mw.classrooms.fetchAllLevels)
   app.get('/db/classroom/:handle/member-sessions', mw.classrooms.fetchMemberSessions)
   app.get('/db/classroom/:handle/members', mw.classrooms.fetchMembers) # TODO: Use mw.auth?
   app.get('/db/classroom/:handle', mw.auth.checkLoggedIn()) # TODO: Finish migrating route, adding now so 401 is returned
