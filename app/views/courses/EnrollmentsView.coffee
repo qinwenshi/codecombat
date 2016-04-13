@@ -62,11 +62,16 @@ module.exports = class EnrollmentsView extends RootView
       @memberEnrolledMap[user.id] = user.get('coursePrepaidID')?
     @classroomNotEnrolledMap = {}
     @totalNotEnrolled = 0
+    @classroomEnrolledMap = {}
+    @totalEnrolled = 0
     for classroom in @classrooms.models
       @classroomNotEnrolledMap[classroom.id] = 0
+      @classroomEnrolledMap[classroom.id] = 0
       for memberID in classroom.get('members')
         @classroomNotEnrolledMap[classroom.id]++ unless @memberEnrolledMap[memberID]
+        @classroomEnrolledMap[classroom.id]++ if @memberEnrolledMap[memberID]
       @totalNotEnrolled += @classroomNotEnrolledMap[classroom.id]
+      @totalEnrolled += @classroomEnrolledMap[classroom.id]
     # @numberOfStudents = @totalNotEnrolled
     @numberOfStudents = 15 # TODO: Count students properly
     @render?()
