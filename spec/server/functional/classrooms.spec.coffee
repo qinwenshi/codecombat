@@ -8,6 +8,8 @@ request = require '../request'
 requestAsync = Promise.promisify(request, {multiArgs: true})
 User = require '../../../server/models/User'
 Classroom = require '../../../server/models/Classroom'
+Course = require '../../../server/models/Course'
+Campaign = require '../../../server/models/Campaign'
 LevelSession = require '../../../server/models/LevelSession'
 Level = require '../../../server/models/Level'
 
@@ -57,10 +59,23 @@ describe 'GET /db/classroom/:id', ->
             expect(body._id).toBe(classroomID = body._id)
             done()
 
-describe 'POST /db/classroom', ->
+fdescribe 'POST /db/classroom', ->
   
   beforeEach utils.wrap (done) ->
-    yield utils.clearModels [User, Classroom]
+    yield utils.clearModels [User, Classroom, Course, Level, Campaign]
+    admin = yield utils.initAdmin()
+    yield utils.loginUser(admin)
+    levelJSON = { name: 'King\'s Peak 3', permissions: [{access: 'owner', target: admin.id}], type: 'course' }
+    [res, body] = yield request.postAsync({uri: getURL('/db/level'), json: levelJSON})
+    expect(res.statusCode).toBe(200)
+    @level = yield Level.findById(res.body._id)
+    campaignJSON = { name: 'Campaign', levels: {} }
+    paredLevel = _.pick(res.body, 'name', 'original', 'type')
+    campaignJSON.levels[res.body.original] = paredLevel
+    [res, body] = yield request.postAsync({uri: getURL('/db/campaign'), json: campaignJSON})
+    @campaign = yield Campaign.findById(res.body._id)
+    @course = Course({name: 'Course', campaignID: @campaign._id})
+    yield @course.save()
     done()
   
   it 'creates a new classroom for the given user with teacher role', utils.wrap (done) ->
@@ -75,6 +90,7 @@ describe 'POST /db/classroom', ->
     done()
         
   it 'returns 401 for anonymous users', utils.wrap (done) ->
+    yield utils.logout()
     data = { name: 'Classroom 2' }
     [res, body] = yield request.postAsync {uri: classroomsURL, json: data }
     expect(res.statusCode).toBe(401)
@@ -86,6 +102,16 @@ describe 'POST /db/classroom', ->
     data = { name: 'Classroom 1' }
     [res, body] = yield request.postAsync {uri: classroomsURL, json: data }
     expect(res.statusCode).toBe(403)
+    done()
+    
+  it 'makes a copy of the list of all levels in all courses', utils.wrap (done) ->
+    teacher = yield utils.initUser({role: 'teacher'})
+    yield utils.loginUser(teacher)
+    data = { name: 'Classroom 2' }
+    [res, body] = yield request.postAsync {uri: classroomsURL, json: data }
+    classroom = yield Classroom.findById(res.body._id)
+    expect(classroom.get('courses')[0].levels[0].original.toString()).toBe(@level.get('original').toString())
+    expect(classroom.get('courses')[0].levels[0].type).toBe('course')
     done()
         
         

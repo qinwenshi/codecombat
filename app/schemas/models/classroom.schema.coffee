@@ -24,10 +24,7 @@ _.extend ClassroomSchema.properties,
     _id: c.objectId()
     levels: c.array { title: 'Levels' }, c.object { title: 'Level' }, {
       type: c.shortString()
-      version: c.object({ title: 'Version' }, {
-        majorVersion: {type: 'number', minimum: 0}
-        original: c.objectId()
-      })
+      original: c.objectId()
     }
   }
 

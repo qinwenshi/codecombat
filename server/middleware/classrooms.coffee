@@ -6,6 +6,8 @@ Promise = require 'bluebird'
 database = require '../commons/database'
 mongoose = require 'mongoose'
 Classroom = require '../models/Classroom'
+Course = require '../models/Course'
+Campaign = require '../models/Campaign'
 parse = require '../commons/parse'
 LevelSession = require '../models/LevelSession'
 User = require '../models/User'
@@ -71,6 +73,25 @@ module.exports =
     classroom.set 'ownerID', req.user._id
     classroom.set 'members', []
     database.assignBody(req, classroom)
+    
+    # copy over data from how courses are right now
+    courses = yield Course.find()
+    campaigns = yield Campaign.find({_id: {$in: (course.get('campaignID') for course in courses)}})
+    campaignMap = {}
+    campaignMap[campaign.id] = campaign for campaign in campaigns
+    coursesData = []
+    for course in courses
+      courseData = { _id: course._id, levels: [] }
+      campaign = campaignMap[course.get('campaignID').toString()]
+      for levelID, level of campaign.get('levels')
+        courseData.levels.push({
+          type: level.type
+          original: level.original
+        })
+      coursesData.push(courseData)
+    classroom.set('courses', coursesData)
+    
+    # finish
     database.validateDoc(classroom)
     classroom = yield classroom.save()
     res.status(201).send(classroom.toObject({req: req}))
