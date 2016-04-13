@@ -46,6 +46,23 @@ module.exports =
     
     res.status(200).send(levels)
 
+  fetchLevelsForCourse: wrap (req, res, next) ->
+    classroom = yield database.getDocFromHandle(req, Classroom)
+    if not classroom
+      throw new errors.NotFound('Classroom not found.')
+    
+    levelOriginals = []
+    for course in classroom.get('courses') or []
+      if course._id.toString() isnt req.params.courseID
+        continue
+      for level in course.levels
+        levelOriginals.push(level.original)
+
+    levels = yield Level.find({ original: { $in: levelOriginals }, slug: { $exists: true }}).select(parse.getProjectFromReq(req))
+    levels = (level.toObject({ req: req }) for level in levels)
+
+    res.status(200).send(levels)
+
   fetchMemberSessions: wrap (req, res, next) ->
     throw new errors.Unauthorized() unless req.user
     memberLimit = parse.getLimitFromReq(req, {default: 10, max: 100, param: 'memberLimit'})
