@@ -72,8 +72,7 @@ module.exports = class EnrollmentsView extends RootView
         @classroomEnrolledMap[classroom.id]++ if @memberEnrolledMap[memberID]
       @totalNotEnrolled += @classroomNotEnrolledMap[classroom.id]
       @totalEnrolled += @classroomEnrolledMap[classroom.id]
-    # @numberOfStudents = @totalNotEnrolled
-    @numberOfStudents = 15 # TODO: Count students properly
+    @numberOfStudents = @totalNotEnrolled
     @render?()
 
   onInputStudentsInput: ->
