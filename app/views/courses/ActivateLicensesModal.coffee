@@ -97,8 +97,8 @@ module.exports = class ActivateLicensesModal extends ModalView
       return
 
     user = @usersToRedeem.first()
-    prepaid = @prepaids.find((prepaid) -> prepaid.get('properties')?.endDate? and prepaid.openSpots())
-    prepaid = @prepaids.find((prepaid) -> prepaid.openSpots()) unless prepaid
+    prepaid = @prepaids.find((prepaid) -> prepaid.get('properties')?.endDate? and prepaid.openSpots() > 0)
+    prepaid = @prepaids.find((prepaid) -> prepaid.openSpots() > 0) unless prepaid
     $.ajax({
       method: 'POST'
       url: _.result(prepaid, 'url') + '/redeemers'
