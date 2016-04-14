@@ -17,9 +17,8 @@ for (var courseIndex in courses) {
   
   _.forOwn(campaign.levels, function(level) {
     levelData = { original: ObjectId(level.original) };
-    if(level.type)
-      levelData.type = level.type;
-    courseData.levels.push(levelData)
+    _.extend(levelData, _.pick(level, 'type', 'slug'));
+    courseData.levels.push(levelData);
   });
   coursesData.push(courseData);
 }
@@ -27,8 +26,8 @@ for (var courseIndex in courses) {
 print('constructed', JSON.stringify(coursesData));
 
 db.classrooms.update(
-  {},
-  //{courses: {$exists: false}},
+  {}, // Set all
+  //{courses: {$exists: false}}, // Set all w/out values
   {$set: {courses: coursesData}},
   {multi: true}
 );

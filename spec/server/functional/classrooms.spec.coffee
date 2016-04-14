@@ -70,7 +70,7 @@ describe 'POST /db/classroom', ->
     expect(res.statusCode).toBe(200)
     @level = yield Level.findById(res.body._id)
     campaignJSON = { name: 'Campaign', levels: {} }
-    paredLevel = _.pick(res.body, 'name', 'original', 'type')
+    paredLevel = _.pick(res.body, 'name', 'original', 'type', 'slug')
     campaignJSON.levels[res.body.original] = paredLevel
     [res, body] = yield request.postAsync({uri: getURL('/db/campaign'), json: campaignJSON})
     @campaign = yield Campaign.findById(res.body._id)
@@ -112,6 +112,7 @@ describe 'POST /db/classroom', ->
     classroom = yield Classroom.findById(res.body._id)
     expect(classroom.get('courses')[0].levels[0].original.toString()).toBe(@level.get('original').toString())
     expect(classroom.get('courses')[0].levels[0].type).toBe('course')
+    expect(classroom.get('courses')[0].levels[0].slug).toBe('kings-peak-3')
     done()
         
 describe 'GET /db/classroom/:handle/levels', ->
