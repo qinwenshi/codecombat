@@ -175,7 +175,7 @@ module.exports = class TeacherClassView extends RootView
     @students.sort()
   
   getSelectedStudentIDs: ->
-    $('.student-row .checkbox-flat input:checked').map (index, checkbox) ->
+    @$('.student-row .checkbox-flat input:checked').map (index, checkbox) ->
       $(checkbox).data('student-id')
     
   ensureInstance: (courseID) ->
@@ -190,7 +190,7 @@ module.exports = class TeacherClassView extends RootView
     application.tracker?.trackEvent 'Classroom started enroll students', category: 'Courses'
   
   onClickBulkEnroll: ->
-    courseID = $('.bulk-course-select').val()
+    courseID = @$('.bulk-course-select').val()
     courseInstance = @courseInstances.findWhere({ courseID, classroomID: @classroom.id })
     userIDs = @getSelectedStudentIDs().toArray()
     selectedUsers = new Users(@students.get(userID) for userID in userIDs)
@@ -200,7 +200,7 @@ module.exports = class TeacherClassView extends RootView
     application.tracker?.trackEvent 'Classroom started enroll students', category: 'Courses'
     
   onClickBulkAssign: ->
-    courseID = $('.bulk-course-select').val()
+    courseID = @$('.bulk-course-select').val()
     courseInstance = @courseInstances.findWhere({ courseID, classroomID: @classroom.id })
     selectedIDs = @getSelectedStudentIDs()
     members = selectedIDs.filter((index, userID) =>
@@ -242,12 +242,12 @@ module.exports = class TeacherClassView extends RootView
     
   onClickSelectAll: (e) ->
     e.preventDefault()
-    checkboxes = $('.student-checkbox input')
+    checkboxes = @$('.student-checkbox input')
     if _.all(checkboxes, 'checked')
-      $('.select-all input').prop('checked', false)
+      @$('.select-all input').prop('checked', false)
       checkboxes.prop('checked', false)
     else
-      $('.select-all input').prop('checked', true)
+      @$('.select-all input').prop('checked', true)
       checkboxes.prop('checked', true)
     null
     
@@ -257,8 +257,8 @@ module.exports = class TeacherClassView extends RootView
     checkbox = $(e.currentTarget).find('input')
     checkbox.prop('checked', not checkbox.prop('checked'))
     # checkboxes.prop('checked', false)
-    checkboxes = $('.student-checkbox input')
-    $('.select-all input').prop('checked', _.all(checkboxes, 'checked'))
+    checkboxes = @$('.student-checkbox input')
+    @$('.select-all input').prop('checked', _.all(checkboxes, 'checked'))
   
   onChangeCourseSelect: (e) ->
     @selectedCourse = @courses.get($(e.currentTarget).val())
