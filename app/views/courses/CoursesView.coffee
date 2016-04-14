@@ -39,8 +39,6 @@ module.exports = class CoursesView extends RootView
     @supermodel.trackCollection(@ownedClassrooms)
     @courses = new CocoCollection([], { url: "/db/course", model: Course})
     @supermodel.loadCollection(@courses)
-    @campaigns = new CocoCollection([], { url: "/db/campaign", model: Campaign })
-    @supermodel.loadCollection(@campaigns, { data: { type: 'course' }})
 
   onCourseInstancesLoaded: ->
     map = {}
