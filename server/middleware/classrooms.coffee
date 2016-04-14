@@ -117,10 +117,10 @@ module.exports =
       courseData = { _id: course._id, levels: [] }
       campaign = campaignMap[course.get('campaignID').toString()]
       for levelID, level of campaign.get('levels')
-        courseData.levels.push({
-          type: level.type
-          original: level.original
-        })
+        levelData = { original: mongoose.Types.ObjectId(level.original) }
+        if level.type
+          levelData.type = level.type
+        courseData.levels.push(levelData)
       coursesData.push(courseData)
     classroom.set('courses', coursesData)
     
