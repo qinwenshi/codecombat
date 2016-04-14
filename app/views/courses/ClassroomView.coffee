@@ -6,6 +6,7 @@ Classroom = require 'models/Classroom'
 Classrooms = require 'collections/Classrooms'
 LevelSession = require 'models/LevelSession'
 Prepaids = require 'collections/Prepaids'
+Levels = require 'collections/Levels'
 RootView = require 'views/core/RootView'
 template = require 'templates/courses/classroom-view'
 User = require 'models/User'
@@ -55,6 +56,11 @@ module.exports = class ClassroomView extends RootView
     @ownedClassrooms = new Classrooms()
     @ownedClassrooms.fetchMine({data: {project: '_id'}})
     @supermodel.trackCollection(@ownedClassrooms)
+    @levels = new Levels()
+    @levels.fetchForClassroom(classroomID, {data: {project: 'name,slug,original'}})
+    @levels.on 'add', (model) -> @_byId[model.get('original')] = model # so you can 'get' them
+      
+    @supermodel.trackCollection(@levels)
 
   onCourseInstancesSync: ->
     @sessions = new CocoCollection([], { model: LevelSession })
@@ -240,4 +246,4 @@ module.exports = class ClassroomView extends RootView
 
   getLevelURL: (level, course, courseInstance, session) ->
     return null unless @teacherMode and _.all(arguments)
-    "/play/level/#{level.slug}?course=#{course.id}&course-instance=#{courseInstance.id}&session=#{session.id}&observing=true"
+    "/play/level/#{level.get('slug')}?course=#{course.id}&course-instance=#{courseInstance.id}&session=#{session.id}&observing=true"

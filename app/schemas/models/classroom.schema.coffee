@@ -25,6 +25,8 @@ _.extend ClassroomSchema.properties,
     levels: c.array { title: 'Levels' }, c.object { title: 'Level' }, {
       type: c.shortString()
       original: c.objectId()
+      name: {type: 'string'}
+      slug: {type: 'string'}
     }
   }
 
