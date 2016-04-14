@@ -25,29 +25,15 @@ describe 'TeacherClassView', ->
       @campaigns = require 'test/app/fixtures/campaigns'
       @courseInstances = require 'test/app/fixtures/course-instances'
       @levelSessions = require 'test/app/fixtures/level-sessions-partially-completed'
-      responses = {
-        '/db/classroom': @classroom.toJSON()
-        '/db/course': @courses.toJSON()
-        '/db/campaign': @campaigns.toJSON()
-        '/db/course_instance': @courseInstances.toJSON()
-      }
+      
       @view = new TeacherClassView()
+      @view.classroom.fakeRequests.forEach (r, index) => r.respondWith({ status: 200, responseText: JSON.stringify(@classroom) })
+      @view.courses.fakeRequests.forEach (r, index) => r.respondWith({ status: 200, responseText: JSON.stringify(@courses) })
+      @view.campaigns.fakeRequests.forEach (r, index) => r.respondWith({ status: 200, responseText: JSON.stringify(@campaigns) })
+      @view.courseInstances.fakeRequests.forEach (r, index) => r.respondWith({ status: 200, responseText: JSON.stringify(@courseInstances) })
+      @view.students.fakeRequests.forEach (r, index) => r.respondWith({ status: 200, responseText: JSON.stringify(@students) })
+      @view.classroom.sessions.fakeRequests.forEach (r, index) => r.respondWith({ status: 200, responseText: JSON.stringify(@levelSessions) })
       
-      jasmine.Ajax.requests.sendResponses(responses)
-      _.filter(jasmine.Ajax.requests.all().slice(), (request) ->
-        /\/db\/classroom\/.*\/members/.test(request.url) and request.readyState < 4
-      ).forEach (request) =>
-        console.log JSON.stringify(@students.toJSON())
-        console.log "Responding to request", request
-        request.respondWith({ status: 200, responseText: JSON.stringify(@students.toJSON()) })
-
-      _.filter(jasmine.Ajax.requests.all().slice(), (request) ->
-        /\/db\/classroom\/.*\/member-sessions/.test(request.url) and request.readyState < 4
-      ).forEach (request) =>
-        request.respondWith({ status: 200, responseText: JSON.stringify(@levelSessions.toJSON()) })
-      
-      console.log @view.students
-      console.log @view.supermodel.report()
       jasmine.demoEl(@view.$el)
       _.defer done
     
