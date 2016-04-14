@@ -118,7 +118,7 @@ module.exports =
       campaign = campaignMap[course.get('campaignID').toString()]
       for levelID, level of campaign.get('levels')
         levelData = { original: mongoose.Types.ObjectId(level.original) }
-        _.extend(levelData, _.pick(level, 'type', 'slug'))
+        _.extend(levelData, _.pick(level, 'type', 'slug', 'name'))
         courseData.levels.push(levelData)
       coursesData.push(courseData)
     classroom.set('courses', coursesData)

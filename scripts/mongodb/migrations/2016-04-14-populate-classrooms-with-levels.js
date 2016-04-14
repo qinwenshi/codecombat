@@ -17,7 +17,7 @@ for (var courseIndex in courses) {
   
   _.forOwn(campaign.levels, function(level) {
     levelData = { original: ObjectId(level.original) };
-    _.extend(levelData, _.pick(level, 'type', 'slug'));
+    _.extend(levelData, _.pick(level, 'type', 'slug', 'name'));
     courseData.levels.push(levelData);
   });
   coursesData.push(courseData);

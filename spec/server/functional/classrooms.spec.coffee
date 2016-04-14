@@ -113,6 +113,7 @@ describe 'POST /db/classroom', ->
     expect(classroom.get('courses')[0].levels[0].original.toString()).toBe(@level.get('original').toString())
     expect(classroom.get('courses')[0].levels[0].type).toBe('course')
     expect(classroom.get('courses')[0].levels[0].slug).toBe('kings-peak-3')
+    expect(classroom.get('courses')[0].levels[0].name).toBe('King\'s Peak 3')
     done()
         
 describe 'GET /db/classroom/:handle/levels', ->
