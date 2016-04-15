@@ -54,7 +54,6 @@ describe 'TeacherClassView', ->
           expect(@view.$('.cant-assign-to-unenrolled').hasClass('visible')).toBe(false)
           @view.$('.student-row .checkbox-flat').click()
           @view.$('.assign-to-selected-students').click()
-          # debugger
           expect(@view.$('.cant-assign-to-unenrolled').hasClass('visible')).toBe(true)
           
         it 'shows alert when assigning but no students are selected', ->
