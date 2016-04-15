@@ -26,7 +26,7 @@ module.exports = class EnrollmentsView extends RootView
     @listenTo stripeHandler, 'received-token', @onStripeReceivedToken
     @fromClassroom = utils.getQueryVariable('from-classroom')
     @members = new Users()
-    @listenTo @members, 'sync', @membersSync
+    @listenTo @members, 'sync add remove', @membersSync
     @classrooms = new CocoCollection([], { url: "/db/classroom", model: Classroom })
     @classrooms.comparator = '_id'
     @listenToOnce @classrooms, 'sync', @onceClassroomsSync
@@ -54,9 +54,10 @@ module.exports = class EnrollmentsView extends RootView
 
   onceClassroomsSync: ->
     for classroom in @classrooms.models
-      @members.fetchForClassroom(classroom, {remove: false})
+      @members.fetchForClassroom(classroom, {remove: false, removeDeleted: true})
 
   membersSync: ->
+    @removeDeletedStudents()
     @memberEnrolledMap = {}
     for user in @members.models
       @memberEnrolledMap[user.id] = user.get('coursePrepaidID')?
@@ -74,6 +75,13 @@ module.exports = class EnrollmentsView extends RootView
       @totalEnrolled += @classroomEnrolledMap[classroom.id]
     @numberOfStudents = @totalNotEnrolled
     @render?()
+    
+  removeDeletedStudents: (e) ->
+    for classroom in @classrooms.models
+      _.remove(classroom.get('members'), (memberID) =>
+        not @members.get(memberID) or @members.get(memberID)?.get('deleted')
+      )
+    true
 
   onInputStudentsInput: ->
     input = @$('#students-input').val()
