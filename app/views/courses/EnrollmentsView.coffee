@@ -67,7 +67,7 @@ module.exports = class EnrollmentsView extends RootView
       sum + (if user.get('coursePrepaidID') then 1 else 0)
     ), 0
     
-    @totalNotEnrolled = _.reduce @members.models, ((sum, user) ->
+    @numberOfStudents = @totalNotEnrolled = _.reduce @members.models, ((sum, user) ->
       sum + (if not user.get('coursePrepaidID') then 1 else 0)
     ), 0
     
