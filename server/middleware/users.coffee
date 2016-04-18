@@ -49,6 +49,6 @@ module.exports =
         $addToSet: { deletedMembers: userID }
         $pull: { members: userID }
       }
-      { multi: true, new: true }
+      { multi: true }
     )
     next()
