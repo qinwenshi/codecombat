@@ -9,6 +9,9 @@ NewItemView = require 'views/play/level/modal/NewItemView'
 ProgressView = require 'views/play/level/modal/ProgressView'
 
 describe 'CourseVictoryModal', ->
+  beforeEach (done) ->
+    me.clear()
+    done()
 
   it 'will eventually be the only victory modal'
   
