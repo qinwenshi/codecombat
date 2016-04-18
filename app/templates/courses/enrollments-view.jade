@@ -54,7 +54,7 @@ mixin enrollmentStats
   .small-details
     span(data-i18n='teacher.total_unique_students')
     span.spr :
-    = view.members.length
+    = view.totalEnrolled + view.totalNotEnrolled
   .small-details
     span(data-i18n='teacher.total_enrolled_students')
     span.spr :

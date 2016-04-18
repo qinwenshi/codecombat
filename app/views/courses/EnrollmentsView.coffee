@@ -26,7 +26,7 @@ module.exports = class EnrollmentsView extends RootView
     @listenTo stripeHandler, 'received-token', @onStripeReceivedToken
     @fromClassroom = utils.getQueryVariable('from-classroom')
     @members = new Users()
-    @listenTo @members, 'sync add remove', @membersSync
+    # @listenTo @members, 'sync add remove', @calculateEnrollmentStats
     @classrooms = new CocoCollection([], { url: "/db/classroom", model: Classroom })
     @classrooms.comparator = '_id'
     @listenToOnce @classrooms, 'sync', @onceClassroomsSync
@@ -45,6 +45,7 @@ module.exports = class EnrollmentsView extends RootView
     # 'click .enroll-students': 'onClickEnrollStudents'
 
   onLoaded: ->
+    @calculateEnrollmentStats()
     @pricePerStudent = @products.findWhere({name: 'course'}).get('amount')
     me.setRole 'teacher'
     super()
@@ -54,27 +55,39 @@ module.exports = class EnrollmentsView extends RootView
 
   onceClassroomsSync: ->
     for classroom in @classrooms.models
-      @members.fetchForClassroom(classroom, {remove: false, removeDeleted: true})
+      @supermodel.trackRequests @members.fetchForClassroom(classroom, {remove: false, removeDeleted: true})
 
-  membersSync: ->
+  calculateEnrollmentStats: ->
     @removeDeletedStudents()
     @memberEnrolledMap = {}
     for user in @members.models
       @memberEnrolledMap[user.id] = user.get('coursePrepaidID')?
-    @classroomNotEnrolledMap = {}
-    @totalNotEnrolled = 0
-    @classroomEnrolledMap = {}
-    @totalEnrolled = 0
-    for classroom in @classrooms.models
-      @classroomNotEnrolledMap[classroom.id] = 0
-      @classroomEnrolledMap[classroom.id] = 0
-      for memberID in classroom.get('members')
-        @classroomNotEnrolledMap[classroom.id]++ unless @memberEnrolledMap[memberID]
-        @classroomEnrolledMap[classroom.id]++ if @memberEnrolledMap[memberID]
-      @totalNotEnrolled += @classroomNotEnrolledMap[classroom.id]
-      @totalEnrolled += @classroomEnrolledMap[classroom.id]
-    @numberOfStudents = @totalNotEnrolled
-    @render?()
+      
+    @totalEnrolled = _.reduce @members.models, ((sum, user) ->
+      sum + (if user.get('coursePrepaidID') then 1 else 0)
+    ), 0
+    
+    @totalNotEnrolled = _.reduce @members.models, ((sum, user) ->
+      sum + (if not user.get('coursePrepaidID') then 1 else 0)
+    ), 0
+    
+    @classroomEnrolledMap = _.reduce @classrooms.models, ((map, classroom) =>
+      enrolled = _.reduce classroom.get('members'), ((sum, userID) =>
+        sum + (if @members.get(userID).get('coursePrepaidID') then 1 else 0)
+      ), 0
+      map[classroom.id] = enrolled
+      map
+    ), {}
+    
+    @classroomNotEnrolledMap = _.reduce @classrooms.models, ((map, classroom) =>
+      enrolled = _.reduce classroom.get('members'), ((sum, userID) =>
+        sum + (if not @members.get(userID).get('coursePrepaidID') then 1 else 0)
+      ), 0
+      map[classroom.id] = enrolled
+      map
+    ), {}
+    
+    true
     
   removeDeletedStudents: (e) ->
     for classroom in @classrooms.models

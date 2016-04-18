@@ -51,7 +51,6 @@ module.exports = class TeacherClassView extends RootView
       jqxhrs = @students.fetchForClassroom(@classroom, removeDeleted: true)
       if jqxhrs.length > 0
         @supermodel.trackCollection(@students)
-      @listenTo @students, 'sync', @removeDeletedStudents
       @listenTo @students, 'sync', @sortByName
       @listenTo @students, 'sort', @renderSelectors.bind(@, '.students-table', '.student-levels-table')
       
@@ -72,6 +71,7 @@ module.exports = class TeacherClassView extends RootView
     @supermodel.trackCollection(@courseInstances)
 
   onLoaded: ->
+    @removeDeletedStudents()
     
     @classCode = @classroom.get('codeCamel') or @classroom.get('code')
     @joinURL = document.location.origin + "/courses?_cc=" + @classCode
@@ -132,7 +132,7 @@ module.exports = class TeacherClassView extends RootView
     @openModalView(modal)
     @listenToOnce modal, 'hide', @render
   
-  removeDeletedStudents: (e) ->
+  removeDeletedStudents: () ->
     _.remove(@classroom.get('members'), (memberID) =>
       not @students.get(memberID) or @students.get(memberID)?.get('deleted')
     )

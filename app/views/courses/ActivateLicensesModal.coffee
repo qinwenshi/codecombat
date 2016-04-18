@@ -29,7 +29,7 @@ module.exports = class ActivateLicensesModal extends ModalView
       success: =>
         @classrooms.each (classroom) =>
           classroom.users = new Users()
-          jqxhrs = classroom.users.fetchForClassroom(classroom)
+          jqxhrs = classroom.users.fetchForClassroom(classroom, { removeDeleted: true })
           @supermodel.trackRequests(jqxhrs)
       })
     @supermodel.trackCollection(@classrooms)
