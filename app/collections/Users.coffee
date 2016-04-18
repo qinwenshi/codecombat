@@ -27,6 +27,5 @@ module.exports = class Users extends CocoCollection
 
   removeDeletedUsers: ->
     @remove @filter (user) ->
-      console.log "model is deleted: ", user.get('deleted')
       user.get('deleted')
     true
