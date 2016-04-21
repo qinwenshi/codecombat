@@ -8,4 +8,8 @@ module.exports = class LevelCollection extends CocoCollection
   fetchForClassroom: (classroomID, options={}) ->
     options.url = "/db/classroom/#{classroomID}/levels"
     @fetch(options)
-    
+
+  fetchForClassroomAndCourse: (classroomID, courseID, options={}) ->
+    options.url = "/db/classroom/#{classroomID}/courses/#{courseID}/levels"
+    @fetch(options)
+  

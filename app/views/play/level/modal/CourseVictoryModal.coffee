@@ -58,7 +58,7 @@ module.exports = class CourseVictoryModal extends ModalView
 
     if @courseInstanceID
       @levelSessions = new LevelSessions()
-      @levelSessions.fetchForCourseInstance(@courseInstanceID)
+      @levelSessions.fetchMineForCourseInstance(@courseInstanceID)
       @levelSessions = @supermodel.loadCollection(@levelSessions, 'sessions', {
         data: { project: 'state.complete level.original playtime changed' }
       }).model

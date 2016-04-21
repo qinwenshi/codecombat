@@ -43,10 +43,16 @@ module.exports =
     
     levels = yield Level.find({ original: { $in: levelOriginals }, slug: { $exists: true }}).select(parse.getProjectFromReq(req))
     levels = (level.toObject({ req: req }) for level in levels)
-    
+
+    # maintain course order
+    levelMap = {}
+    for level in levels
+      levelMap[level.original] = level
+    levels = (levelMap[levelOriginal.toString()] for levelOriginal in levelOriginals)
+
     res.status(200).send(levels)
 
-  fetchLevelsForCourse: wrap (req, res, next) ->
+  fetchLevelsForCourse: wrap (req, res) ->
     classroom = yield database.getDocFromHandle(req, Classroom)
     if not classroom
       throw new errors.NotFound('Classroom not found.')
@@ -60,7 +66,13 @@ module.exports =
 
     levels = yield Level.find({ original: { $in: levelOriginals }, slug: { $exists: true }}).select(parse.getProjectFromReq(req))
     levels = (level.toObject({ req: req }) for level in levels)
-
+    
+    # maintain course order
+    levelMap = {}
+    for level in levels
+      levelMap[level.original] = level
+    levels = (levelMap[levelOriginal.toString()] for levelOriginal in levelOriginals)
+    
     res.status(200).send(levels)
 
   fetchMemberSessions: wrap (req, res, next) ->
