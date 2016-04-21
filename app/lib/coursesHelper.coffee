@@ -1,8 +1,10 @@
+Levels = require 'collections/Levels'
+
 module.exports =
   # Result: Each course instance gains a property, numCompleted, that is the
   #   number of students in that course instance who have completed ALL of
   #   the levels in thate course
-  calculateDots: (classrooms, courses, courseInstances, campaigns) ->
+  calculateDots: (classrooms, courses, courseInstances) ->
     for classroom in classrooms.models
       # map [user, level] => session so we don't have to do find TODO
       for course, courseIndex in courses.models
@@ -10,9 +12,10 @@ module.exports =
         continue if not instance
         instance.numCompleted = 0
         instance.numStarted = 0
-        campaign = campaigns.get(course.get('campaignID'))
+        levels = new Levels(classroom.getLevels(course.id))
+        levels.remove(levels.filter((level) -> level.isLadder()))
         for userID in instance.get('members')
-          levelCompletes = _.map campaign.getNonLadderLevels().models, (level) ->
+          levelCompletes = _.map levels.models, (level) ->
             return true if level.isLadder()
             #TODO: Hella slow! Do the mapping first!
             session = _.find classroom.sessions.models, (session) ->
