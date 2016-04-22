@@ -107,19 +107,19 @@ mixin course-instance-body(courseInstance, classroom)
     if stats.levels.done
       - var arenaLevel = stats.levels.arena;
       if arenaLevel
-        - var arenaURL = "/play/ladder/"+arenaLevel.slug+"/course/"+courseInstance.id;
+        - var arenaURL = "/play/ladder/"+arenaLevel.get('slug')+"/course/"+courseInstance.id;
         a.btn.btn-warning.btn-lg(href=arenaURL)
           span(data-i18n="courses.play_arena")
       else
         a.btn.btn-default.btn-lg(disabled=true, data-i18n="courses.course_complete")
     else if courseInstance.sessions.size()
       - var lastLevel = stats.levels.lastPlayed;
-      - var levelURL = "/play/level/"+lastLevel.slug+"?course="+courseInstance.get('courseID')+"&course-instance="+courseInstance.id;
+      - var levelURL = "/play/level/"+lastLevel.get('slug')+"?course="+courseInstance.get('courseID')+"&course-instance="+courseInstance.id;
       a.btn.btn-success.btn-lg(href=levelURL)
         span(data-i18n="common.continue")
     else
       - var firstLevel = stats.levels.first;
-      - var levelURL = "/play/level/"+firstLevel.slug+"?course="+courseInstance.get('courseID')+"&course-instance="+courseInstance.id;
+      - var levelURL = "/play/level/"+firstLevel.get('slug')+"?course="+courseInstance.get('courseID')+"&course-instance="+courseInstance.id;
       a.btn.btn-info.btn-lg(href=levelURL)
         span(data-i18n="courses.start")
 
