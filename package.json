@@ -89,7 +89,7 @@
     "winston": "0.6.x",
     "auto-reload-brunch": "> 1.0 < 1.8",
     "bless-brunch": "https://github.com/ThomasConner/bless-brunch/tarball/master",
-    "bower": "~1.6.4",
+    "bower": "~1.6.4"
   },
   "devDependencies": {
     "after-brunch": "0.0.5",
